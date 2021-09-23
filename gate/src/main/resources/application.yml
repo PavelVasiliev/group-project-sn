@@ -1,0 +1,63 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin Access-Control-Allow-Headers
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowed-origins:
+              - "http://localhost:8080"
+              - "http://185.193.143.204:8080"
+            allowed-methods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowed-headers:
+              - "Authorization"
+              - "Content-Type"
+              - "x-requested-with"
+              - "Access-Control-Allow-Origin"
+              - "Access-Control-Allow-Headers"
+              - "Access-Control-Allow-Methods"
+              - "x-auth-token"
+              - "x-app-id"
+              - "Origin"
+              - "Accept"
+              - "X-Requested-With"
+              - "Access-Control-Request-Method"
+              - "Access-Control-Request-Headers"
+              - "application/json"
+              - "text/plain"
+            allow-credentials: true
+      routes:
+        - id: server-sn
+          uri: lb://server-sn
+          predicates:
+            - Path=/api/v1/**
+          filters:
+            - RewritePath=(?<segment>.*), /$\{segment}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+logging:
+  level:
+    org.springframework.cloud.gateway: TRACE
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://185.193.143.204:8888/eureka

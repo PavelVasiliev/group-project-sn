@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: discovery
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          searchLocations: file:./config/
+
+eureka:
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://185.193.143.204:8888/eureka
+
+server:
+  port: 8888
